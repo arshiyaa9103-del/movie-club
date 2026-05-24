@@ -13,16 +13,18 @@ export default function Dashboard() {
   const { data: groups, isLoading: groupsLoading } = useGetGroups();
   const { data: activity, isLoading: activityLoading } = useGetMyActivity();
 
+  const isGuest = (user as any)?.isAnonymous === true;
+
   useEffect(() => {
     if (user && !upsertMe.isPending && !upsertMe.isSuccess) {
       upsertMe.mutate({
         data: {
-          displayName: user.fullName || user.primaryEmailAddress?.emailAddress || "Unknown User",
-          avatarUrl: user.imageUrl,
+          displayName: isGuest ? "Guest" : (user.fullName || user.primaryEmailAddress?.emailAddress || "Unknown User"),
+          avatarUrl: isGuest ? undefined : user.imageUrl,
         }
       });
     }
-  }, [user, upsertMe]);
+  }, [user, upsertMe, isGuest]);
 
   return (
     <AppLayout>

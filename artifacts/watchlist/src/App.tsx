@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk } from '@clerk/react';
+import { useSignIn } from '@clerk/react/legacy';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
 import { Switch, Route, useLocation, Router as WouterRouter, Redirect } from 'wouter';
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
 
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -60,6 +60,42 @@ const clerkAppearance = {
   },
 };
 
+function GuestLoginButton() {
+  const { signIn, setActive, isLoaded } = useSignIn();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleGuestLogin = async () => {
+    if (!signIn || !setActive) return;
+    setLoading(true);
+    setError("");
+    try {
+      const result = await signIn.create({ strategy: "anonymous" as any });
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+      }
+    } catch (err: any) {
+      setError(err?.errors?.[0]?.message || "Guest login unavailable. Please sign in.");
+      setLoading(false);
+    }
+  };
+
+  if (!isLoaded) return null;
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <button
+        onClick={handleGuestLogin}
+        disabled={loading}
+        className="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4 transition-colors disabled:opacity-50"
+      >
+        {loading ? "Signing in as guest..." : "Continue as Guest"}
+      </button>
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
+
 function HomeRedirect() {
   return (
     <>
@@ -68,9 +104,31 @@ function HomeRedirect() {
       </Show>
       <Show when="signed-out">
         <div className="min-h-screen w-full flex flex-col items-center justify-center bg-background p-4 text-center">
-          <h1 className="text-5xl font-bold mb-6 text-primary tracking-tight">CineCircle</h1>
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <span className="text-4xl">🎬</span>
+          </div>
+          <h1 className="text-5xl font-bold mb-4 text-primary tracking-tight">CineCircle</h1>
           <p className="text-xl text-muted-foreground mb-10 max-w-lg">Organize your viewing life with friends. The cozy film club for tracking what to watch next.</p>
-          <a href={`${basePath}/sign-in`} className="bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium text-lg hover:opacity-90 transition-opacity">Get Started</a>
+          <div className="flex flex-col items-center gap-4 w-full max-w-xs">
+            <a
+              href={`${basePath}/sign-in`}
+              className="w-full bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium text-lg hover:opacity-90 transition-opacity text-center"
+            >
+              Sign In
+            </a>
+            <a
+              href={`${basePath}/sign-up`}
+              className="w-full bg-card border border-border text-foreground px-8 py-3 rounded-md font-medium text-lg hover:bg-muted transition-colors text-center"
+            >
+              Create Account
+            </a>
+            <div className="flex items-center gap-3 w-full my-1">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-xs text-muted-foreground">or</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+            <GuestLoginButton />
+          </div>
         </div>
       </Show>
     </>

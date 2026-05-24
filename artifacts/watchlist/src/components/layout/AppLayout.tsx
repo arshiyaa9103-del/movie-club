@@ -1,13 +1,16 @@
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
-import { Film, Home, Activity, Users, PlusCircle, LogOut, Menu } from "lucide-react";
+import { Film, Home, Activity, Users, PlusCircle, LogOut, Menu, UserPlus } from "lucide-react";
 import { useState } from "react";
+
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { signOut } = useClerk();
   const { user } = useUser();
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isGuest = (user as any)?.isAnonymous === true;
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -59,12 +62,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
         <div className="mt-8 pt-4 border-t border-border flex flex-col gap-4">
           <div className="flex items-center gap-3 px-2">
-            {user?.imageUrl && (
+            {user?.imageUrl && !isGuest ? (
               <img src={user.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                <Users className="w-4 h-4 text-muted-foreground" />
+              </div>
             )}
             <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-medium truncate">{user?.fullName || "User"}</span>
-              <span className="text-xs text-muted-foreground truncate">{user?.primaryEmailAddress?.emailAddress}</span>
+              <span className="text-sm font-medium truncate">{isGuest ? "Guest" : (user?.fullName || "User")}</span>
+              <span className="text-xs text-muted-foreground truncate">
+                {isGuest ? "Browsing as guest" : user?.primaryEmailAddress?.emailAddress}
+              </span>
             </div>
           </div>
           <button 
@@ -79,6 +88,21 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
+        {isGuest && (
+          <div className="bg-primary/10 border-b border-primary/20 px-4 py-2.5 flex items-center justify-between gap-4">
+            <p className="text-sm text-foreground">
+              <span className="font-medium">You're browsing as a guest.</span>{" "}
+              <span className="text-muted-foreground">Create an account to save your watchlists and invite friends.</span>
+            </p>
+            <a
+              href={`${basePath}/sign-up`}
+              className="shrink-0 flex items-center gap-1.5 bg-primary text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-md hover:opacity-90 transition-opacity"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              Create Account
+            </a>
+          </div>
+        )}
         {children}
       </main>
     </div>
