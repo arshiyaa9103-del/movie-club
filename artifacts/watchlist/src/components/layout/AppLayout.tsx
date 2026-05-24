@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
-import { Film, Home, Activity, Users, PlusCircle, LogOut, Menu, UserPlus } from "lucide-react";
+import { Film, Home, Activity, PlusCircle, LogOut, Menu, X, UserPlus, Users } from "lucide-react";
 import { useState } from "react";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -19,66 +19,105 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row" style={{ background: "#0a1123" }}>
+      {/* Subtle fixed background gradient */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div style={{
+          position: "absolute", width: "60vw", height: "60vw",
+          top: "-20vh", left: "-15vw",
+          background: "radial-gradient(ellipse, rgba(131,135,195,0.10) 0%, transparent 65%)",
+          borderRadius: "50%",
+        }} />
+        <div style={{
+          position: "absolute", width: "50vw", height: "50vw",
+          bottom: "-15vh", right: "-10vw",
+          background: "radial-gradient(ellipse, rgba(58,62,108,0.35) 0%, transparent 65%)",
+          borderRadius: "50%",
+        }} />
+      </div>
+
       {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg text-primary">
+      <header className="md:hidden relative z-20 flex items-center justify-between px-4 py-3 border-b border-[rgba(149,155,181,0.1)]"
+        style={{ background: "rgba(35,40,80,0.55)", backdropFilter: "blur(20px)" }}>
+        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg" style={{ color: "#8387c3", fontFamily: "'Cinzel', serif" }}>
           <Film className="w-5 h-5" />
           CineCircle
         </Link>
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2">
-          <Menu className="w-5 h-5" />
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-[#959bb5] hover:text-[#e8eaf2] transition-colors">
+          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </header>
 
       {/* Sidebar */}
       <aside className={`
-        ${isMobileMenuOpen ? "flex" : "hidden"} 
-        md:flex flex-col w-full md:w-64 border-r border-border bg-card p-4 md:min-h-screen
-      `}>
-        <Link href="/dashboard" className="hidden md:flex items-center gap-2 font-bold text-xl text-primary mb-8 px-2">
-          <Film className="w-6 h-6" />
-          CineCircle
-        </Link>
+        ${isMobileMenuOpen ? "flex" : "hidden"}
+        md:flex flex-col w-full md:w-60 border-r border-[rgba(149,155,181,0.1)]
+        relative z-20 md:min-h-screen md:sticky md:top-0 md:h-screen
+      `}
+        style={{ background: "rgba(25,30,65,0.6)", backdropFilter: "blur(28px)" }}>
 
-        <nav className="flex-1 space-y-1">
+        <div className="hidden md:flex items-center gap-2.5 px-5 pt-6 pb-5 font-bold text-xl"
+          style={{ color: "#8387c3", fontFamily: "'Cinzel', serif" }}>
+          <Film className="w-5 h-5" />
+          CineCircle
+        </div>
+
+        <nav className="flex-1 px-3 space-y-0.5 py-2">
           {navItems.map((item) => {
             const isActive = location === item.href || (item.href !== "/dashboard" && location.startsWith(item.href));
             return (
-              <Link 
-                key={item.href} 
+              <Link
+                key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                  isActive ? "bg-primary text-primary-foreground font-medium" : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  isActive
+                    ? "text-[#e8eaf2]"
+                    : "text-[#8a8cac] hover:text-[#e8eaf2]"
                 }`}
+                style={isActive ? {
+                  background: "rgba(131,135,195,0.18)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(131,135,195,0.2)",
+                } : {}}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className={`w-4 h-4 ${isActive ? "text-[#8387c3]" : ""}`} />
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="mt-8 pt-4 border-t border-border flex flex-col gap-4">
-          <div className="flex items-center gap-3 px-2">
+        <div className="px-3 pb-4 space-y-3 border-t border-[rgba(149,155,181,0.1)] pt-4">
+          <div className="flex items-center gap-3 px-2 py-1">
             {user?.imageUrl && !isGuest ? (
-              <img src={user.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full" />
+              <img src={user.imageUrl} alt="Avatar" className="w-8 h-8 rounded-full ring-1 ring-[rgba(131,135,195,0.3)]" />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                <Users className="w-4 h-4 text-muted-foreground" />
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
+                style={{ background: "rgba(131,135,195,0.2)", color: "#8387c3" }}>
+                {isGuest ? <Users className="w-4 h-4" /> : (user?.fullName?.charAt(0) || "?")}
               </div>
             )}
-            <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-medium truncate">{isGuest ? "Guest" : (user?.fullName || "User")}</span>
-              <span className="text-xs text-muted-foreground truncate">
+            <div className="flex flex-col overflow-hidden min-w-0">
+              <span className="text-sm font-medium text-[#e8eaf2] truncate">{isGuest ? "Guest" : (user?.fullName || "User")}</span>
+              <span className="text-xs text-[#8a8cac] truncate">
                 {isGuest ? "Browsing as guest" : user?.primaryEmailAddress?.emailAddress}
               </span>
             </div>
           </div>
-          <button 
+
+          {isGuest && (
+            <a href={`${basePath}/sign-up`}
+              className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-sm font-medium transition-all"
+              style={{ background: "rgba(131,135,195,0.18)", color: "#8387c3", border: "1px solid rgba(131,135,195,0.2)" }}>
+              <UserPlus className="w-4 h-4" />
+              Create Account
+            </a>
+          )}
+
+          <button
             onClick={() => signOut({ redirectUrl: import.meta.env.BASE_URL })}
-            className="flex items-center gap-3 px-3 py-2 text-sm text-muted-foreground hover:text-destructive transition-colors w-full rounded-md hover:bg-muted"
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm text-[#8a8cac] hover:text-[#d95f6e] transition-colors hover:bg-[rgba(217,95,110,0.08)]"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
@@ -87,17 +126,17 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto relative z-10">
         {isGuest && (
-          <div className="bg-primary/10 border-b border-primary/20 px-4 py-2.5 flex items-center justify-between gap-4">
-            <p className="text-sm text-foreground">
+          <div className="flex items-center justify-between gap-4 px-4 py-2.5 border-b border-[rgba(149,155,181,0.1)]"
+            style={{ background: "rgba(131,135,195,0.1)", backdropFilter: "blur(12px)" }}>
+            <p className="text-sm text-[#e8eaf2]">
               <span className="font-medium">You're browsing as a guest.</span>{" "}
-              <span className="text-muted-foreground">Create an account to save your watchlists and invite friends.</span>
+              <span className="text-[#8a8cac]">Create an account to save your watchlists.</span>
             </p>
-            <a
-              href={`${basePath}/sign-up`}
-              className="shrink-0 flex items-center gap-1.5 bg-primary text-primary-foreground text-xs font-medium px-3 py-1.5 rounded-md hover:opacity-90 transition-opacity"
-            >
+            <a href={`${basePath}/sign-up`}
+              className="shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all"
+              style={{ background: "#8387c3", color: "#0a1123" }}>
               <UserPlus className="w-3.5 h-3.5" />
               Create Account
             </a>

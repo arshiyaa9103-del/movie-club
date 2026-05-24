@@ -35,30 +35,39 @@ const clerkAppearance = {
     logoLinkUrl: basePath || "/",
   },
   variables: {
-    colorPrimary: "hsl(346.8 77.2% 49.8%)",
-    colorForeground: "hsl(0 0% 98%)",
-    colorMutedForeground: "hsl(240 5% 64.9%)",
-    colorDanger: "hsl(0 62.8% 30.6%)",
-    colorBackground: "hsl(240 10% 3.9%)",
-    colorInput: "hsl(240 3.7% 15.9%)",
-    colorInputForeground: "hsl(0 0% 98%)",
-    colorNeutral: "hsl(240 3.7% 15.9%)",
+    colorPrimary: "#8387c3",
+    colorForeground: "#e8eaf2",
+    colorMutedForeground: "#959bb5",
+    colorDanger: "#d95f6e",
+    colorBackground: "#0d1530",
+    colorInput: "rgba(10, 17, 35, 0.6)",
+    colorInputForeground: "#e8eaf2",
+    colorNeutral: "#3a3e6c",
+    borderRadius: "0.75rem",
   },
   elements: {
     rootBox: "w-full flex justify-center",
-    cardBox: "bg-background rounded-2xl w-[440px] max-w-full overflow-hidden",
+    cardBox: "rounded-2xl w-[440px] max-w-full overflow-hidden",
     card: "!shadow-none !border-0 !bg-transparent !rounded-none",
     footer: "!shadow-none !border-0 !bg-transparent !rounded-none",
-    headerTitle: "text-foreground",
-    headerSubtitle: "text-muted-foreground",
-    socialButtonsBlockButtonText: "text-foreground",
-    formFieldLabel: "text-foreground",
-    footerActionLink: "text-primary",
-    footerActionText: "text-muted-foreground",
-    dividerText: "text-muted-foreground",
-    formFieldInput: "bg-input text-foreground border-neutral",
+    headerTitle: "text-[#e8eaf2]",
+    headerSubtitle: "text-[#959bb5]",
+    socialButtonsBlockButtonText: "text-[#e8eaf2]",
+    formFieldLabel: "text-[#e8eaf2]",
+    footerActionLink: "text-[#8387c3]",
+    footerActionText: "text-[#959bb5]",
+    dividerText: "text-[#8a8cac]",
+    formFieldInput: "bg-[rgba(10,17,35,0.55)] border-[rgba(149,155,181,0.2)] text-[#e8eaf2]",
   },
 };
+
+function LiquidBackground() {
+  return (
+    <div className="liquid-bg" aria-hidden="true">
+      <div className="liquid-orb-mid" />
+    </div>
+  );
+}
 
 function GuestLoginButton() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -87,11 +96,11 @@ function GuestLoginButton() {
       <button
         onClick={handleGuestLogin}
         disabled={loading}
-        className="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4 transition-colors disabled:opacity-50"
+        className="text-[#8a8cac] hover:text-[#e8eaf2] text-sm underline underline-offset-4 transition-colors disabled:opacity-50"
       >
         {loading ? "Signing in as guest..." : "Continue as Guest"}
       </button>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-xs text-[#d95f6e]">{error}</p>}
     </div>
   );
 }
@@ -103,31 +112,48 @@ function HomeRedirect() {
         <Redirect to="/dashboard" />
       </Show>
       <Show when="signed-out">
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-background p-4 text-center">
-          <div className="mb-4 flex items-center justify-center gap-2">
-            <span className="text-4xl">🎬</span>
-          </div>
-          <h1 className="text-5xl font-bold mb-4 text-primary tracking-tight">CineCircle</h1>
-          <p className="text-xl text-muted-foreground mb-10 max-w-lg">Organize your viewing life with friends. The cozy film club for tracking what to watch next.</p>
-          <div className="flex flex-col items-center gap-4 w-full max-w-xs">
-            <a
-              href={`${basePath}/sign-in`}
-              className="w-full bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium text-lg hover:opacity-90 transition-opacity text-center"
-            >
-              Sign In
-            </a>
-            <a
-              href={`${basePath}/sign-up`}
-              className="w-full bg-card border border-border text-foreground px-8 py-3 rounded-md font-medium text-lg hover:bg-muted transition-colors text-center"
-            >
-              Create Account
-            </a>
-            <div className="flex items-center gap-3 w-full my-1">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-xs text-muted-foreground">or</span>
-              <div className="flex-1 h-px bg-border" />
+        <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 text-center relative overflow-hidden">
+          <LiquidBackground />
+
+          <div className="relative z-10 flex flex-col items-center max-w-sm w-full">
+            <div className="mb-6 w-16 h-16 rounded-2xl glass flex items-center justify-center glow-primary">
+              <span className="text-3xl">🎬</span>
             </div>
-            <GuestLoginButton />
+
+            <h1
+              className="text-6xl font-bold mb-3 tracking-wide"
+              style={{ fontFamily: "'Cinzel', serif", color: "#8387c3", textShadow: "0 0 40px rgba(131,135,195,0.4)" }}
+            >
+              CineCircle
+            </h1>
+            <p className="text-[#8a8cac] text-lg mb-10 leading-relaxed">
+              Your cozy film club.<br />Track, discover, and share movies with friends.
+            </p>
+
+            <div className="glass-dense rounded-2xl p-6 w-full space-y-3">
+              <a
+                href={`${basePath}/sign-in`}
+                className="w-full flex items-center justify-center bg-[#8387c3] text-[#0a1123] px-6 py-3 rounded-xl font-semibold text-base hover:bg-[#959bb5] transition-colors glow-primary"
+              >
+                Sign In
+              </a>
+              <a
+                href={`${basePath}/sign-up`}
+                className="w-full flex items-center justify-center glass glass-hover text-[#e8eaf2] px-6 py-3 rounded-xl font-medium text-base"
+              >
+                Create Account
+              </a>
+              <div className="flex items-center gap-3 pt-1">
+                <div className="flex-1 h-px bg-[rgba(149,155,181,0.15)]" />
+                <span className="text-xs text-[#8a8cac]">or</span>
+                <div className="flex-1 h-px bg-[rgba(149,155,181,0.15)]" />
+              </div>
+              <GuestLoginButton />
+            </div>
+
+            <p className="mt-6 text-xs text-[#8a8cac] opacity-60">
+              No credit card required. Free forever.
+            </p>
           </div>
         </div>
       </Show>
@@ -137,16 +163,22 @@ function HomeRedirect() {
 
 function SignInPage() {
   return (
-    <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4">
-      <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} />
+    <div className="flex min-h-[100dvh] items-center justify-center px-4 relative overflow-hidden">
+      <LiquidBackground />
+      <div className="relative z-10 glass-dense rounded-2xl overflow-hidden">
+        <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} appearance={clerkAppearance} />
+      </div>
     </div>
   );
 }
 
 function SignUpPage() {
   return (
-    <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4">
-      <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
+    <div className="flex min-h-[100dvh] items-center justify-center px-4 relative overflow-hidden">
+      <LiquidBackground />
+      <div className="relative z-10 glass-dense rounded-2xl overflow-hidden">
+        <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} appearance={clerkAppearance} />
+      </div>
     </div>
   );
 }
@@ -207,13 +239,13 @@ function ClerkProviderWithRoutes() {
             <Route path="/sign-in/*?" component={SignInPage} />
             <Route path="/sign-up/*?" component={SignUpPage} />
             <Route path="/invite/:token" component={InvitePage} />
-            
+
             <ProtectedRoute path="/dashboard" component={Dashboard} />
             <ProtectedRoute path="/groups/new" component={NewGroup} />
             <ProtectedRoute path="/groups/:groupId" component={GroupPage} />
             <ProtectedRoute path="/groups/:groupId/movie/:entryId" component={MovieDetailPage} />
             <ProtectedRoute path="/activity" component={ActivityPage} />
-            
+
             <Route component={NotFound} />
           </Switch>
         </TooltipProvider>

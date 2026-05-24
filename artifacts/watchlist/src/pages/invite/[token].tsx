@@ -16,28 +16,19 @@ export default function InvitePage() {
 
   const handleAccept = () => {
     if (!user) {
-      // If not logged in, redirect to sign up with the return URL
       const returnUrl = encodeURIComponent(window.location.pathname);
       window.location.href = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/sign-up?redirect_url=${returnUrl}`;
       return;
     }
-
     acceptInvite.mutate(
       { token },
       {
         onSuccess: () => {
-          toast({
-            title: "Joined group",
-            description: `You are now a member of ${invite?.groupName}`,
-          });
-          setLocation("/dashboard"); // ideally we'd go to the group, but we don't have groupId in the response easily without parsing
+          toast({ title: "Joined group", description: `You are now a member of ${invite?.groupName}` });
+          setLocation("/dashboard");
         },
         onError: () => {
-          toast({
-            title: "Error joining group",
-            description: "The invite might be expired or invalid.",
-            variant: "destructive"
-          });
+          toast({ title: "Error joining group", description: "The invite might be expired or invalid.", variant: "destructive" });
         }
       }
     );
@@ -45,50 +36,59 @@ export default function InvitePage() {
 
   if (isLoading || !isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse">Loading invite...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0a1123" }}>
+        <div className="animate-pulse text-[#8a8cac] text-sm">Loading invite...</div>
       </div>
     );
   }
 
   if (error || !invite) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
-        <div className="bg-destructive/10 text-destructive p-4 rounded-full mb-6">
-          <Film className="w-12 h-12" />
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center relative overflow-hidden" style={{ background: "#0a1123" }}>
+        <div className="fixed inset-0 pointer-events-none">
+          <div style={{ position: "absolute", width: "60vw", height: "60vw", top: "-20vh", left: "-15vw", background: "radial-gradient(ellipse, rgba(131,135,195,0.08) 0%, transparent 65%)", borderRadius: "50%" }} />
         </div>
-        <h1 className="text-2xl font-bold mb-2">Invalid Invite</h1>
-        <p className="text-muted-foreground mb-8">This invite link is invalid or has expired.</p>
-        <Link href="/" className="bg-primary text-primary-foreground px-6 py-2 rounded-md font-medium">
-          Go Home
-        </Link>
+        <div className="relative z-10 glass-dense rounded-2xl p-10 max-w-sm w-full text-center">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            style={{ background: "rgba(217,95,110,0.15)", border: "1px solid rgba(217,95,110,0.25)" }}>
+            <Film className="w-8 h-8 text-[#d95f6e]" />
+          </div>
+          <h1 className="text-2xl font-bold text-[#e8eaf2] mb-2">Invalid Invite</h1>
+          <p className="text-[#8a8cac] mb-8">This invite link is invalid or has expired.</p>
+          <Link href="/" className="inline-flex items-center justify-center w-full py-3 rounded-xl font-semibold transition-all"
+            style={{ background: "#8387c3", color: "#0a1123" }}>
+            Go Home
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: "#0a1123" }}>
+      <div className="fixed inset-0 pointer-events-none">
+        <div style={{ position: "absolute", width: "70vw", height: "70vw", top: "-25vh", left: "-20vw", background: "radial-gradient(ellipse, rgba(131,135,195,0.13) 0%, transparent 65%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", width: "55vw", height: "55vw", bottom: "-15vh", right: "-15vw", background: "radial-gradient(ellipse, rgba(58,62,108,0.4) 0%, transparent 65%)", borderRadius: "50%" }} />
+      </div>
 
-      <div className="w-full max-w-md bg-card border border-border p-8 rounded-2xl shadow-xl text-center relative z-10">
-        <div className="w-16 h-16 bg-primary/20 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Users className="w-8 h-8" />
+      <div className="glass-dense rounded-2xl p-8 max-w-md w-full text-center relative z-10">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+          style={{ background: "rgba(131,135,195,0.2)", border: "1px solid rgba(131,135,195,0.25)" }}>
+          <Users className="w-8 h-8 text-[#8387c3]" />
         </div>
-        
-        <h1 className="text-2xl font-bold text-foreground mb-2">You've been invited!</h1>
-        <p className="text-muted-foreground mb-8">
-          Join <span className="font-semibold text-foreground">{invite.groupName}</span> on CineCircle.
+
+        <h1 className="text-2xl font-bold text-[#e8eaf2] mb-2">You've been invited!</h1>
+        <p className="text-[#8a8cac] mb-8">
+          Join <span className="font-semibold text-[#e8eaf2]">{invite.groupName}</span> on CineCircle.
         </p>
 
         {invite.description && (
-          <div className="bg-muted p-4 rounded-lg text-sm text-muted-foreground mb-8 text-left border border-border/50">
+          <div className="glass rounded-xl p-4 text-sm text-[#8a8cac] mb-6 text-left">
             {invite.description}
           </div>
         )}
 
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-8">
+        <div className="flex items-center justify-center gap-2 text-sm text-[#8a8cac] mb-8">
           <Users className="w-4 h-4" />
           {invite.memberCount} existing {invite.memberCount === 1 ? 'member' : 'members'}
         </div>
@@ -96,20 +96,18 @@ export default function InvitePage() {
         <button
           onClick={handleAccept}
           disabled={acceptInvite.isPending}
-          className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+          style={{ background: "#8387c3", color: "#0a1123", boxShadow: "0 0 24px rgba(131,135,195,0.3)" }}
         >
           {user ? (
             acceptInvite.isPending ? "Joining..." : "Join Group"
           ) : (
-            <>
-              <LogIn className="w-4 h-4" />
-              Sign in to join
-            </>
+            <><LogIn className="w-4 h-4" /> Sign in to join</>
           )}
         </button>
 
         {!user && (
-          <p className="mt-4 text-xs text-muted-foreground">
+          <p className="mt-4 text-xs text-[#8a8cac] opacity-70">
             You'll need a CineCircle account to join. It's free!
           </p>
         )}
