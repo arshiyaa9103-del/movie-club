@@ -21,10 +21,10 @@ import {
   Film, 
   Link as LinkIcon, 
   CheckCircle2, 
-  Trash2,
   Clock,
   Heart,
-  Check
+  Check,
+  Trophy
 } from "lucide-react";
 
 export default function GroupPage() {
@@ -243,6 +243,50 @@ export default function GroupPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {stats?.topLiked && stats.topLiked.length > 0 && (
+              <div className="glass rounded-2xl p-5">
+                <h2 className="font-semibold mb-4 flex items-center gap-2 text-[#e8eaf2]">
+                  <Trophy className="w-4 h-4 text-[#8387c3]" />
+                  Top Picks
+                </h2>
+                <ul className="space-y-3">
+                  {stats.topLiked.map((movie, index) => {
+                    const likedCount = movie.statusCounts?.liked || 0;
+                    return (
+                      <li key={movie.id}>
+                        <Link href={`/groups/${groupId}/movie/${movie.id}`}>
+                          <div className="flex items-center gap-3 group cursor-pointer rounded-xl p-1.5 -mx-1.5 transition-colors hover:bg-[rgba(131,135,195,0.08)]">
+                            <span className="w-5 text-xs font-bold tabular-nums text-center shrink-0"
+                              style={{ color: index === 0 ? "#f5c842" : index === 1 ? "#b0b3d6" : "#8a8cac" }}>
+                              {index + 1}
+                            </span>
+                            {movie.poster ? (
+                              <img src={movie.poster} alt={movie.title}
+                                className="w-9 h-12 object-cover rounded-md shrink-0"
+                                style={{ border: "1px solid rgba(149,155,181,0.15)" }} />
+                            ) : (
+                              <div className="w-9 h-12 rounded-md shrink-0 flex items-center justify-center"
+                                style={{ background: "rgba(58,62,108,0.4)", border: "1px solid rgba(149,155,181,0.15)" }}>
+                                <Film className="w-4 h-4 text-[#8387c3] opacity-60" />
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-[#e8eaf2] truncate group-hover:text-[#8387c3] transition-colors">{movie.title}</p>
+                              <p className="text-xs text-[#8a8cac]">{movie.year}</p>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              <Heart className="w-3.5 h-3.5 fill-current text-[#8387c3]" />
+                              <span className="text-xs font-semibold text-[#8387c3]">{likedCount}</span>
+                            </div>
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             )}
           </div>
