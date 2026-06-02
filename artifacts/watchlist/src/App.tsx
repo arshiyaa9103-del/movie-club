@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ClerkProvider, SignIn, SignUp, Show, useClerk } from '@clerk/react';
-import { useSignIn } from '@clerk/react/legacy';
+import { ClerkProvider, SignIn, SignUp, Show, useClerk, useSignUp } from '@clerk/react';
 import { publishableKeyFromHost } from '@clerk/react/internal';
 import { shadcn } from '@clerk/themes';
 import { Switch, Route, useLocation, Router as WouterRouter, Redirect } from 'wouter';
@@ -70,21 +69,34 @@ function LiquidBackground() {
 }
 
 function GuestLoginButton() {
-  const { signIn, setActive, isLoaded } = useSignIn();
+  const { signUp, setActive, isLoaded } = useSignUp();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleGuestLogin = async () => {
-    if (!signIn || !setActive) return;
+    if (!signUp || !setActive) return;
     setLoading(true);
     setError("");
     try {
-      const result = await signIn.create({ strategy: "anonymous" as any });
+      const guestId = Math.random().toString(36).slice(2, 10);
+      const emailAddress = `guest_${guestId}@cinecircle.guest`;
+      const password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2) + "Aa1!";
+
+      let result = await signUp.create({ emailAddress, password });
+
+      if (result.status === "missing_requirements") {
+        await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+        result = await signUp.attemptEmailAddressVerification({ code: "424242" });
+      }
+
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+      } else {
+        throw new Error("Could not complete guest sign-in.");
       }
     } catch (err: any) {
-      setError(err?.errors?.[0]?.message || "Guest login unavailable. Please sign in.");
+      const msg = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message || "Guest login unavailable.";
+      setError(msg);
       setLoading(false);
     }
   };
@@ -98,9 +110,9 @@ function GuestLoginButton() {
         disabled={loading}
         className="text-[#8a8cac] hover:text-[#e8eaf2] text-sm underline underline-offset-4 transition-colors disabled:opacity-50"
       >
-        {loading ? "Signing in as guest..." : "Continue as Guest"}
+        {loading ? "Creating guest session..." : "Continue as Guest"}
       </button>
-      {error && <p className="text-xs text-[#d95f6e]">{error}</p>}
+      {error && <p className="text-xs text-[#d95f6e] max-w-[260px] text-center">{error}</p>}
     </div>
   );
 }
