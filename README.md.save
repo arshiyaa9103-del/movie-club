@@ -1,0 +1,30 @@
+# Movie Club Hub 🎬🍿
+
+A collaborative web application designed for film enthusiasts to log movies, curate personal watchlists, and sync up with friends. No more endless debates over what to stream next—create groups, track shared favorites, and vote on your next watch party movie seamlessly.
+
+## ✨ Features
+
+* **Personal Movie Logging:** Track what you've watched, rate titles, and leave personal reviews.
+* **Smart Watchlists:** Maintain a personal queue of movies you want to check out.
+* **Friend Groups:** Form custom movie clubs with your friends.
+* **Shared Group Watchlists:** Collaborative lists where everyone in the group can add movies and vote on what to watch next.
+
+## 🛠️ Tech Stack
+
+* **Frontend:** React, TypeScript, HTML5, CSS3 / Tailwind CSS
+* **Icons:** FontAwesome
+* **Version Control:** Git & GitHub
+
+## 🚀 Getting Started
+
+Follow these steps to set up and run the project locally on your machine.
+
+### Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) installed.
+
+### Installation
+
+1. Clone the repository (if downloading to a new machine):
+   ```bash
+   git clone [https://github.com/arshiyaa9103-del/movie-club.git](https://github.com/arshiyaa9103-del/movie-club.git)
+
