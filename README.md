@@ -20,4 +20,4 @@ A collaborative web application designed for film enthusiasts to log movies, cur
 ### Installation
 1. Install the required dependencies:
    ```bash
-   npm install
+   pnpm install
