@@ -129,7 +129,7 @@ function HomeRedirect() {
 
           <div className="relative z-10 flex flex-col items-center max-w-sm w-full">
             <div className="mb-6 flex items-center justify-center">
-              <img src={`${basePath}/logo.png`} alt="CineCircle Logo" className="w-24 h-24 object-contain drop-shadow-lg" />
+              <img src={`${basePath}/cinelogo.png`} alt="CineCircle Logo" className="w-24 h-24 object-contain drop-shadow-lg" />
             </div>
 
             <h1
