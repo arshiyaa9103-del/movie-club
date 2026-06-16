@@ -128,8 +128,8 @@ function HomeRedirect() {
           <LiquidBackground />
 
           <div className="relative z-10 flex flex-col items-center max-w-sm w-full">
-            <div className="mb-6 w-16 h-16 rounded-2xl glass flex items-center justify-center glow-primary">
-              <span className="text-3xl">🎬</span>
+            <div className="mb-6 flex items-center justify-center">
+              <img src={`${basePath}/logo.png`} alt="CineCircle Logo" className="w-24 h-24 object-contain drop-shadow-lg" />
             </div>
 
             <h1

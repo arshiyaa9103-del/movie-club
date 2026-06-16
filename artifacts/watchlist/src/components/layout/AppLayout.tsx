@@ -40,7 +40,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <header className="md:hidden relative z-20 flex items-center justify-between px-4 py-3 border-b border-[rgba(149,155,181,0.1)]"
         style={{ background: "rgba(35,40,80,0.55)", backdropFilter: "blur(20px)" }}>
         <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg" style={{ color: "#8387c3", fontFamily: "'Cinzel', serif" }}>
-          <Film className="w-5 h-5" />
+          <img src={`${basePath}/logo.png`} alt="Logo" className="w-6 h-6 object-contain" />
           CineCircle
         </Link>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-[#959bb5] hover:text-[#e8eaf2] transition-colors">
@@ -58,7 +58,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
         <div className="hidden md:flex items-center gap-2.5 px-5 pt-6 pb-5 font-bold text-xl"
           style={{ color: "#8387c3", fontFamily: "'Cinzel', serif" }}>
-          <Film className="w-5 h-5" />
+          <img src={`${basePath}/logo.png`} alt="Logo" className="w-7 h-7 object-contain" />
           CineCircle
         </div>
 
