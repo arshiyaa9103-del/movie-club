@@ -86,7 +86,7 @@ function GuestLoginButton() {
 
       if (result.status === "missing_requirements") {
         await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-        result = await signUp.attemptEmailAddressVerification({ code: "424242" });
+        result = await <signUp className="attemptE1"></signUp>mailAddressVerification({ code: "424242" });
       }
 
       if (result.status === "complete") {
